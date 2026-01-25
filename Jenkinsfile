@@ -9,7 +9,7 @@
                     agent any
                     steps{
                 echo 'cloning...'
-                        git 'https://github.com/RayItern/DevOpsCodeDemo-1.git'
+                        git 'https://github.com/RayItern/Backup-DevOpscodeDemode-repo.git'
                     }
                 }
                 stage('Compile with slave1'){
