@@ -1,54 +1,56 @@
-        pipeline{
-            tools{
-                jdk 'myjava'
-                maven 'mymaven'
-            }
+       pipeline {
+    agent none
+
+    tools {
+        jdk 'myjava'
+        maven 'mymaven'
+    }
+
+    stages {
+
+        stage('Checkout') {
             agent any
-            stages{
-                stage('Checkout on Master'){
-                    agent any
-                    steps{
-                echo 'cloning...'
-                        git 'https://github.com/ukamakanwakile526-bit/Backup-DevOpscodeDemode-repo.git'
+            steps {
+                echo 'Cloning forked repo...'
+                git url: 'https://github.com/ukamakanwakile526-bit/Backup-DevOpscodeDemode-repo.git', branch: 'main'
+            }
+        }
 
+        stage('Compile with slave1') {
+            agent { label 'slave1' }
+            steps {
+                echo 'Compiling...'
+                sh 'mvn compile'
+            }
+        }
 
-                    }
+        stage('CodeReview with slave2') {
+            agent { label 'slave2' }
+            steps {
+                echo 'Code review...'
+                sh 'mvn pmd:pmd'
+            }
+        }
+
+        stage('UnitTest with slave1') {
+            agent { label 'slave1' }
+            steps {
+                echo 'Running tests...'
+                sh 'mvn test'
+            }
+            post {
+                success {
+                    junit 'target/surefire-reports/*.xml'
                 }
-                stage('Compile with slave1'){
-                    agent {label 'slave1'}
-                    steps{
-                        echo 'compiling...'
-                        sh 'mvn compile'
-                }
-                }
-                stage('CodeReview with slave2'){
-                    agent {label 'slave2'}
-                    steps{
-                    
-                echo 'codeReview...'
-                        sh 'mvn pmd:pmd'
-                    }
-                }
-                stage('UnitTest with slave1'){
-                    agent {label 'slave1'}
-                    steps{
-                    echo 'Testing'
-                        sh 'mvn test'
-                    }
-                    post {
-                    success {
-                        junit 'target/surefire-reports/*.xml'
-                    }
-                }	
-                }
-               stage('Package') {
-    agent any
-    steps {
-        echo 'Cloning and packaging...'
-        deleteDir()
-        git url: 'https://github.com/ukamakanwakile526-bit/Backup-DevOpscodeDemode-repo.git', branch: 'main'
-        sh 'mvn package'
+            }
+        }
+
+        stage('Package') {
+            agent any
+            steps {
+                echo 'Packaging...'
+                sh 'mvn package'
+            }
+        }
     }
 }
-
-
