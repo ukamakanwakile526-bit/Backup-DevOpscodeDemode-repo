@@ -41,15 +41,13 @@
                     }
                 }	
                 }
-                stage('Package on master') {
-            agent {
-                label 'master'
-            }
-            steps {
-                echo 'Packaging...'
-                sh 'mvn package'
-            }
-        }
+               stage('Package') {
+    agent any
+    steps {
+        echo 'Cloning and packaging...'
+        deleteDir()
+        git url: 'https://github.com/ukamakanwakile526-bit/Backup-DevOpscodeDemode-repo.git', branch: 'main'
+        sh 'mvn package'
     }
 }
 
