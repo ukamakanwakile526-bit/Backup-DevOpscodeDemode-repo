@@ -12,7 +12,8 @@
             agent any
             steps {
                 echo 'Cloning forked repo...'
-                git url: 'https://github.com/ukamakanwakile526-bit/Backup-DevOpscodeDemode-repo.git', branch: 'main'
+                git url: 'https://github.com/ukamakanwakile526-bit/Backup-DevOpscodeDemode-repo.git', branch: 'master'
+
             }
         }
 
